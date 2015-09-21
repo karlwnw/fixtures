@@ -161,15 +161,37 @@ class DjangoFixture(DBLoadableFixture):
     DjangoMedium = DjangoMedium
     Medium = DjangoMedium
 
-    def wrap_in_transaction(self, routine, unloading=False):
-        """call routine in a load transaction"""
-        from django.db import transaction
+    # def wrap_in_transaction(self, routine, unloading=False):
+    #     """call routine in a load transaction"""
+    #     from django.db import transaction
+    #
+    #     if not unloading:
+    #         self.loaded = self.LoadQueue()
+    #
+    #     with transaction.atomic():
+    #         routine()
 
-        if not unloading:
-            self.loaded = self.LoadQueue()
+    def create_transaction(self):
+        """Return a new transaction
 
-        with transaction.atomic():
-            routine()
+        Calls enter_transaction_management and returns the django.db.transaction
+        module (which meets the API required by fixture)
+        """
+        from django.db import transaction as db_transaction
+        transaction = db_transaction.atomic()
+        transaction.__enter__()
+        return transaction
+
+    def commit(self):
+        pass
+
+    def rollback(self):
+        from django.db import transaction as db_transaction
+        db_transaction.set_rollback(True)
+
+    def then_finally(self, unloading=False):
+        """Not sure if this is needed, leaving it in for a reminder"""
+        self.transaction.__exit__(None, None, None)
 
     def attach_storage_medium(self, ds):
         """Attach the Django model for this DataSet.
