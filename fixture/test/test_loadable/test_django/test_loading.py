@@ -3,8 +3,8 @@ from fixture import DjangoFixture
 from fixture import DataSet, style
 
 from fixture.examples.django_example.app import models
-from fixtures import *
-from util import *
+from .fixtures import *
+from .util import *
 
 dj_fixture = DjangoFixture()
     

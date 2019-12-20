@@ -2,8 +2,8 @@ from datetime import datetime
 from fixture import DjangoFixture
 from fixture.style import NamedDataStyle
 from fixture.loadable.django_loadable import field_is_required
-from fixtures import *
-from util import *
+from .fixtures import *
+from .util import *
 from nose.tools import raises
 from fixture.examples.django_example.app import models
 from django.db import models as django_models
@@ -67,7 +67,7 @@ def test_is_field_required():
                                                         auto_now, auto_now_add,
                                                         result)
     
-    for item in required_matrix.items():
+    for item in list(required_matrix.items()):
         fld, result = item
         check_field_required.description = "%s required? %s" % item
         yield check_field_required, TestMod._meta.get_field(fld), result

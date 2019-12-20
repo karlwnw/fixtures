@@ -95,7 +95,7 @@ class SQLObjectFixtureSet(FixtureSet):
         vals = [getattr(self.data, 'id')]
         vals.extend([self.get_col_value(c.name) for c in self.meta.columnList])
     
-        self.data_dict = dict(zip(cols, vals))
+        self.data_dict = dict(list(zip(cols, vals)))
     
     def attr_to_db_col(self, col):
         if col.dbName is not None:
@@ -114,7 +114,7 @@ class SQLObjectFixtureSet(FixtureSet):
             # which could be perfectly legal.
             return None
             
-        if self.foreign_key_class.has_key(colname):
+        if colname in self.foreign_key_class:
             model = findClass(self.foreign_key_class[colname])
             rs = model.get(value, connection=self.connection)
             return SQLObjectFixtureSet(rs, model, connection=self.connection)
@@ -140,7 +140,7 @@ class SQLObjectFixtureSet(FixtureSet):
         """get an understanding of what columns are what, foreign keys, etc."""
         from sqlobject.col import SOForeignKey
         
-        for name,col in self.meta.columns.items():
+        for name,col in list(self.meta.columns.items()):
             if isinstance(col, SOForeignKey):
                 self.foreign_key_class[col.name] = col.foreignKey
                 

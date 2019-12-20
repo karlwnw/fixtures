@@ -7,7 +7,7 @@ class Category(models.Model):
     slug        = models.SlugField(_('slug'), unique=True)
 
     def __unicode__(self):
-        return u'%s' % self.title
+        return '%s' % self.title
 
 class Post(models.Model):
     title           = models.CharField(_('title'), max_length=200)
@@ -18,4 +18,4 @@ class Post(models.Model):
     categories      = models.ManyToManyField(Category, blank=True)
 
     def __unicode__(self):
-        return u'%s' % self.title
+        return '%s' % self.title

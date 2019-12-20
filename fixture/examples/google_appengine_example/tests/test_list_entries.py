@@ -4,7 +4,7 @@ from fixture import GoogleDatastoreFixture, DataSet
 from fixture.style import NamedDataStyle
 from gblog import application, models
 from webtest import TestApp
-from datasets import CommentData, EntryData
+from .datasets import CommentData, EntryData
 
 datafixture = GoogleDatastoreFixture(env=models, style=NamedDataStyle())
 
@@ -19,7 +19,7 @@ class TestListEntries(unittest.TestCase):
     
     def test_entries(self):
         response = self.app.get("/")
-        print response
+        print(response)
         
         assert EntryData.great_monday.title in response
         assert EntryData.great_monday.body in response

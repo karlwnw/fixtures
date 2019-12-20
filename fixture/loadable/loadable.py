@@ -44,10 +44,10 @@ class StorageMediumAdapter(object):
         for obj in self.dataset.meta._stored_objects:
             try:
                 self.clear(obj)
-            except Exception, e:
+            except Exception as e:
                 etype, val, tb = sys.exc_info()
                 raise UnloadError(etype, val, self.dataset, 
-                                     stored_object=obj), None, tb
+                                     stored_object=obj).with_traceback(tb)
         
     def save(self, row, column_vals):
         """Given a DataRow, must save it somehow.
@@ -122,7 +122,7 @@ class LoadQueue(ObjRegistry):
     def to_unload(self):
         """yields a list of objects in an order suitable for unloading.
         """
-        level_nums = self.tree.keys()
+        level_nums = list(self.tree.keys())
         level_nums.sort()
         treelog.info("*** unload order ***")
         for level in level_nums:
@@ -240,9 +240,9 @@ class LoadableFixture(Fixture):
                     self.loaded.register(ds, level)
                     registered = True
                 
-            except Exception, e:
+            except Exception as e:
                 etype, val, tb = sys.exc_info()
-                raise LoadError(etype, val, ds, key=key, row=row), None, tb
+                raise LoadError(etype, val, ds, key=key, row=row).with_traceback(tb)
     
     def resolve_row_references(self, current_dataset, row):        
         """resolve this DataRow object's referenced values.
@@ -264,9 +264,9 @@ class LoadableFixture(Fixture):
                 
         for name in row.columns():
             val = getattr(row, name)
-            if type(val) in (types.ListType, types.TupleType):
+            if type(val) in (list, tuple):
                 # i.e. categories = [python, ruby]
-                setattr(row, name, map(resolve_stored_object, val))
+                setattr(row, name, list(map(resolve_stored_object, val)))
             elif is_rowlike(val):
                 # i.e. category = python
                 setattr(row, name, resolved_rowlike(val))

@@ -19,23 +19,23 @@ from docutils.readers.standalone import Reader
 from docutils.writers.html4css1 import HTMLTranslator, Writer
 from docutils import nodes
 try:
-    from cStringIO import StringIO
+    from io import StringIO
 except ImportError:
-    from StringIO import StringIO
+    from io import StringIO
 
 heredir = path.dirname(__file__)
 srcdir = path.join(heredir, '..', 'docs')
 builddir = path.abspath(path.join(srcdir, '..', 'build'))
 
 def get_object_from_path(rawpath):
-    parts = rawpath.split(u':')
+    parts = rawpath.split(':')
     if len(parts) > 1:
         modpath, obj = parts
     else:
         modpath = parts[0]
         obj = None
     
-    dot = modpath.rfind(u'.')
+    dot = modpath.rfind('.')
     if dot != -1:
         fromlist = [str(modpath[dot+1:])]
         mod = str(modpath[:dot])
@@ -86,7 +86,7 @@ def shell(
         main = get_object_from_path(options['run_on_method'])
         
         def decode(s):
-            if isinstance(s, unicode):
+            if isinstance(s, str):
                 s = str(s.decode())
             return s
         def unquot(s):
@@ -113,7 +113,7 @@ def shell(
         try:
             try:
                 main(cmdlist[1:])
-            except SystemExit, e:
+            except SystemExit as e:
                 returncode = e.code
             else:
                 returncode = 0

@@ -329,7 +329,7 @@ class TestCollidingSessions(unittest.TestCase):
         data.teardown()
         self.session.clear()
         
-        print [(c.id, c.name) for c in self.session.query(Category).all()]
+        print([(c.id, c.name) for c in self.session.query(Category).all()])
         eq_(list(self.session.query(Category)), [])
 
 class TestScopedSessions(unittest.TestCase):

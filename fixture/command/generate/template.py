@@ -46,7 +46,7 @@ class Template(object):
     class dict(dict):
         def __repr__(self):
             s = ["dict("]
-            for k,v in self.iteritems():
+            for k,v in self.items():
                 s.append("          %s = %s," % (
                                         k, repr(v)))
             s[-1] = s[-1] + ")"
@@ -147,7 +147,7 @@ class %(fxt_class)s(DataSet):
             o = []
             for class_, dict_ in self.elements:
                 o.append("    class %s:" % class_)
-                for k,v in dict_.iteritems():
+                for k,v in dict_.items():
                     o.append("        %s = %s" % (k,repr(v)))
             return "\n".join(o)
     

@@ -18,7 +18,7 @@ class TableEnv(object):
         self.tablemap = {}
         for obj in self.objects:
             module = None
-            if isinstance(obj, basestring):
+            if isinstance(obj, str):
                 modpath = obj
                 if modpath not in sys.modules:
                     # i.e. modpath from command-line option...
@@ -33,9 +33,8 @@ class TableEnv(object):
                             module = __import__(modpath)
                     except:
                         etype, val, tb = sys.exc_info()
-                        raise (
-                            ImportError("%s: %s (while importing %s)" % (
-                                etype, val, modpath)), None, tb)
+                        raise ImportError("%s: %s (while importing %s)" % (
+                                etype, val, modpath))
                 else:
                     module = sys.modules[modpath]
                     obj = module
@@ -51,11 +50,11 @@ class TableEnv(object):
             return self.tablemap[table]
         except KeyError:
             etype, val, tb = sys.exc_info()
-            raise LookupError, (
+            raise LookupError(
                 "Could not locate original declaration of Table %s "
                 "(looked in: %s)  You might need to add "
                 "--env='path.to.module'?" % (
-                        table, ", ".join([repr(p) for p in self.objects]))), tb
+                        table, ", ".join([repr(p) for p in self.objects]))).with_traceback(tb)
     
     def _find_objects(self, obj, module):
         from sqlalchemy.schema import Table
@@ -193,7 +192,7 @@ class SQLAlchemyMappedClassBase(SQLAlchemyHandler):
                     "not sure how to get a table from mapper %s" % 
                                                         self.mapper)
             
-            self.id_attr = self.table.primary_key.columns.keys()
+            self.id_attr = list(self.table.primary_key.columns.keys())
             
         def primary_key_from_instance(self, data):
             return self.mapper.primary_key_from_instance(data)
@@ -215,7 +214,7 @@ class SQLAlchemyMappedClassBase(SQLAlchemyHandler):
             
     def find(self, idval):                                                        
         q = self.session.query(self.obj)
-        primary_keys = self.table.primary_key.columns.keys() # I think this is 0.4 only
+        primary_keys = list(self.table.primary_key.columns.keys()) # I think this is 0.4 only
         try:
             len(idval)
         except TypeError:

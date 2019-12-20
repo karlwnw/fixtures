@@ -1,2 +1,2 @@
 
-from test_loadable import *
+from .test_loadable import *

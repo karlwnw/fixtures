@@ -16,7 +16,7 @@ class TestBookController(TestController):
 
     def test_index(self):
         response = self.app.get(url(controller='book'))
-        print response
+        print(response)
         assert PersonData.joe_gibbs.name in response
         assert PersonData.joe_gibbs.email in response
         assert AddressData.joe_in_montego.address in response

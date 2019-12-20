@@ -54,7 +54,7 @@ class NoseDjango(Plugin):
             return
 
         if self.conf.addPaths:
-            map(add_path, self.conf.where)
+            list(map(add_path, self.conf.where))
 
         add_path(SETTINGS_PATH)
         sys.path.append(SETTINGS_PATH)

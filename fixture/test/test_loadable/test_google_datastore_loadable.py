@@ -182,7 +182,7 @@ class TestListOfRelationships(unittest.TestCase):
         
         eq_(books[0].title, "Man of Two Worlds")
         authors = [self.Author.get(k) for k in books[0].authors]
-        print authors
+        print(authors)
         eq_(len(authors), 2)
         authors.sort(key=lambda a:a.name )
         eq_(authors[0].name, "Brian Herbert")

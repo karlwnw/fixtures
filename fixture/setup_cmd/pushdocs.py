@@ -39,6 +39,6 @@ class pushdocs(Command):
                 "ssh %s 'cd ~/app/static/farmdev/projects/fixture; "
                 "tar -xzf %s.tgz && rm %s.tgz'" % (
                         os.environ['FD_HOST'], pkg, pkg))
-            print "pushed %s to %s" % (pkg, os.environ['FD_HOST'])
+            print("pushed %s to %s" % (pkg, os.environ['FD_HOST']))
         push_pkg(apidocs)
         push_pkg(userdocs)

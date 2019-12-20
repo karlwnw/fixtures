@@ -9,7 +9,7 @@ try:
     import json
 except ImportError:
     import simplejson as json
-from cStringIO import StringIO
+from io import StringIO
         
 class FooData(DataSet):
     class bar:

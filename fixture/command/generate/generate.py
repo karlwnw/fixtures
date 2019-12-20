@@ -47,7 +47,7 @@ class FixtureCache(object):
     def add(self, set):
         fxtid = set.obj_id()        
         self.push_fxtid(fxtid)
-        if not self.registry.has_key(fxtid):
+        if fxtid not in self.registry:
             self.registry[fxtid] = {}
         
         # we want to add a new set but
@@ -88,7 +88,7 @@ class DataSetGenerator(object):
         for h in handler_registry:
             try:
                 recognizes_obj = h.recognizes(object_path, obj=obj)
-            except UnsupportedHandler, e:
+            except UnsupportedHandler as e:
                 warn("%s is unsupported (%s)" % (h, e))
                 continue
             if recognizes_obj:
@@ -96,7 +96,7 @@ class DataSetGenerator(object):
                             obj=obj, template=self.template, **kw)
                 break
         if handler is None:
-            raise UnrecognizedObject, (
+            raise UnrecognizedObject(
                     "no handler recognizes object %s at %s (importable? %s); "
                     "tried handlers %s" %
                         (obj, object_path, (importable and "YES" or "NO"), 
@@ -139,7 +139,7 @@ class DataSetGenerator(object):
             tpl['fxt_class'] = self.handler.mk_class_name(kls)
             
             val_dict = self.cache.registry[kls]
-            for k,fset in val_dict.items():
+            for k,fset in list(val_dict.items()):
                 key = fset.mk_key()
                 data = self.handler.resolve_data_dict(datadef, fset)
                 tpl['data'].append((key, self.template.dict(data)))
@@ -169,7 +169,7 @@ class DataSetGenerator(object):
             self.handler.findall(self.options.where)
             def cache_set(s):        
                 self.cache.add(s)
-                for (k,v) in s.data_dict.items():
+                for (k,v) in list(s.data_dict.items()):
                     if isinstance(v, FixtureSet):
                         f_set = v
                         cache_set(f_set)
@@ -252,10 +252,9 @@ class HandlerType(type):
         # split camel class name into something readable?
         return self.__name__
 
-class DataHandler(object):
+class DataHandler(object, metaclass=HandlerType):
     """handles an object that can provide fixture data.
     """
-    __metaclass__ = HandlerType
     loadable_fxt_class = None
         
     def __init__(self, object_path, options, obj=None, template=None):
@@ -312,7 +311,7 @@ class DataHandler(object):
         # want to do is turn all foreign key values into
         # code strings 
         
-        for k,v in fset.data_dict.items():
+        for k,v in list(fset.data_dict.items()):
             if isinstance(v, FixtureSet):
                 # then it's a foreign key link
                 linked_fset = v
@@ -475,7 +474,7 @@ def main(argv=sys.argv[1:]):
         finally:
             teardown_examples()
         return
-    print( dataset_generator(argv))
+    print(( dataset_generator(argv)))
     return 0
 
 if __name__ == '__main__':
